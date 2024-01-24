@@ -10,7 +10,7 @@ const ConfirmationComponent = ({ formData,goback }) => {
         Dear {name}, your booking has been confirmed on {date} at {timeSlot} with
         {dr}.
       </p>
-      <div><span onClick={goback}>Go, Back</span> </div>
+      <div><p onClick={goback}>Go, Back</p> </div>
     </Confirmationdiv>
   );
 };
@@ -44,6 +44,7 @@ export default function Appointment() {
       const cities=["Pune","Mumbai","Delhi","Bengaluru","Jaipur","New Delhi","Chennai"];
 const goback=()=>{
   setStep(1);
+  setIsSubmitted(false);
   setFormData({
       name: '',
       phone: '',
@@ -445,18 +446,23 @@ background-color:transparent;
 p{
   background-color:transparent;
   width:100%;
+  
   padding:5px;
   color:var(--error-color);
   background-color:transparent;
 }
 div{
-span{
+  background-color:var(--surface-color);
+p{
   text-align:center;
   background-color:var(--surface-color);
-  width:100%;
+    width:100%;
   padding:5px;
-  color:var(--error-color);
-  background-color:transparent;
+  color:white;
+  font-size:24px;
+ font-size:bolder;
+
+  cursor: pointer;
 }
 }
 `
