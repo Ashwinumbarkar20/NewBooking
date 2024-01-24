@@ -8,52 +8,13 @@ export default function Navbar() {
      <nav className="navbar navbar-expand-lg">
         <div className="container-fluid">
 
-          <button
-            className="navbar-toggler"
-            type="button"
-            data-bs-toggle="collapse"
-            data-bs-target="#navbarTogglerDemo03"
-            aria-controls="navbarTogglerDemo03"
-            aria-expanded="false"
-            aria-label="Toggle navigation"
-          >
-            <GiHamburgerMenu className="ham-menu"/>
-          </button>
+        
 
           <a className="navbar-brand" href="#">
             <img src={logo} alt="Logo" />
           </a>
 
-          <div className="collapse navbar-collapse" id="navbarTogglerDemo03">
-            <ul className="navbar-nav ms-auto mb-2 mb-lg-0">
-              <li className="nav-item">
-                <a className="nav-link active" aria-current="page" href="#">
-                  Home
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Services
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Blog
-                </a>
-              </li>
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  About
-                </a>
-              </li>
-            
-              <li className="nav-item">
-                <a className="nav-link" href="#">
-                  Patient Stories
-                </a>
-              </li>
-             </ul>
-          </div>
+          
 <div><button className="book-now">Book Now</button></div>
         </div>
       </nav>
@@ -61,10 +22,13 @@ export default function Navbar() {
   )
 }
 const Navbardiv=styled.div`
+.container-fluid{
+  height: 70px;
+}
 nav {
     background-color: var(--surface-color);
     padding: 0;
-    height: 50px;   
+    height: 70px;   
     color: var(--primary-color);
   }
   .navbar-toggler{
