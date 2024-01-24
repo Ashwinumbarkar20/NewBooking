@@ -1,12 +1,12 @@
 import React from 'react'
 import styled from 'styled-components'
-import Hero from '../../assets/Hero.mp4'
+import Hero from '../../assets/Hero.jpg'
 import Appointment from '../../Components/AppointmentForm/Appointment'
 export default function Herosection() {
   return (
     <Herodiv>
       
-      <video src={Hero} autoPlay muted loop></video>
+      <img src={Hero} alt="Hero-img"></img>
       <div className='Herosectiondiv'>
          <div className='Headingdiv'>
       
@@ -25,7 +25,7 @@ position:relative;
 height:85vh;
 width:100%;
 
-video{
+img{
     height:100%;
     width:100%;
     object-fit:cover;

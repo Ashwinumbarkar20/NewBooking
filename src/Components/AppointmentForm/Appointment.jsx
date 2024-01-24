@@ -2,6 +2,8 @@ import React, {useEffect,useState}from 'react'
 import styled from 'styled-components'
 export default function Appointment() {
     const [step, setStep] = useState(1);
+    const [Error,setError]=useState("");
+    
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -10,16 +12,24 @@ export default function Appointment() {
         company: '',
         chiefComplaints: '',
         experience: false, 
+        
+        
       });
       const [doctors, setDoctors] = useState([]);
       const [filteredDoctors, setFilteredDoctors] = useState([]);
+      const TimeSlots=['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+
+      const formatTimeSlot = (timeSlot) => {
+        
+        return timeSlot;
+      };
+
+    
 
       const fetchDoctors = async () => {
         try {
-          // Fetch data from your API endpoint
-          // Replace this with the actual URL of your API
-        //   const response = await fetch('https://your-api-endpoint/doctors');
-        //   const data = await response.json();
+          const response = await fetch('https://doctordata-9p14.onrender.com/Doctors');
+          const data = await response.json();
     
           setDoctors(data);
         } catch (error) {
@@ -28,7 +38,7 @@ export default function Appointment() {
       };
 
       useEffect(() => {
-        // Fetch doctors when the component mounts
+        
         fetchDoctors();
       }, []);
 
@@ -43,10 +53,21 @@ export default function Appointment() {
       };
     
       const handleNextStep = () => {
-        if (step < 3) {
-          setStep((prevStep) => prevStep + 1);
+        if (step < 3 ||step < 2) {
+          if (formData.name.trim() === '' || formData.phone.trim() === '') {
+            setError("Please fill in all the required fields");
+          } else if (!/^\+91 \d+$/.test(formData.phone)) {
+            setError("Phone should start with '+91' and contain only numbers");
+          } else {
+            setError(""); 
+            setStep((prevStep) => prevStep + 1);
+            const filtered = doctors.filter((doctor) => doctor.city === formData.city);
+            setFilteredDoctors(filtered);
+          }
+          
+          
         } else {
-          // Perform logic to filter doctors based on city
+          setStep((prevStep) => prevStep + 1);
           const filtered = doctors.filter((doctor) => doctor.city === formData.city);
           setFilteredDoctors(filtered);
         }
@@ -71,20 +92,21 @@ export default function Appointment() {
         <div className='form-data'>
           <label>
             Name
-            <input type="text" name="name" value={formData.name} onChange={handleInputChange} />
+            <input type="text" name="name" value={formData.name} onChange={handleInputChange} required/>
           </label>
           
           <label>
             Phone Number
-            <input type="text" name="phone" value={formData.phone} onChange={handleInputChange} />
+            <input type="text" name="phone" maxLength="14" value={formData.phone === '' ? '+91 ' : formData.phone} onChange={handleInputChange} required/>
           </label>
+          <p>{Error}</p>
         </div>
       )}
       {step === 2 && (
         <div className='form=data'>
           <label>
             Age
-            <input type="text" name="age" value={formData.age} onChange={handleInputChange} />
+            <input type="number" name="age" value={formData.age} onChange={handleInputChange} />
           </label>
           
           <label>
@@ -108,8 +130,7 @@ export default function Appointment() {
               onChange={handleInputChange}
             />
           </label>
-          <br />
-          <label>
+          {formData.age<40&&(<label>
             Any Previous Experience with Physiotherapy:
             <input
               type="checkbox"
@@ -117,7 +138,9 @@ export default function Appointment() {
               checked={formData.experience}
               onChange={handleCheckboxChange}
             />
-          </label>
+          </label>)}
+
+          
         </div>
       )}
       <div className='btn-div' style={{"background-color": "var(--surface-color)"}}>
@@ -129,7 +152,6 @@ export default function Appointment() {
         Next
       </button>
     </>
-    
 
 :(step==2)?<>
     (<button className='previous' onClick={handlePreviousStep} disabled={step === 1} >
@@ -142,28 +164,48 @@ export default function Appointment() {
    :(step==3)?<><button className='previous' onClick={handlePreviousStep} disabled={step === 1} >
         Previous
       </button></>:null    
-
     }
-      {/* <button className='previous' onClick={handlePreviousStep} disabled={step === 1} >
-        Previous
-      </button>
-      <button className='next' onClick={handleNextStep} disabled={step === 3}>
-        Next
-      </button> */}
-      </div>
+            </div>
       
       {step === 3 && (
-        <div>
-          <h3>Available Doctors in {formData.city}:</h3>
-          <ul>
-            {filteredDoctors.map((doctor) => (
-              <li key={doctor.id}>
-                {doctor.name} - {doctor.expertise}
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
+  <div>
+    {filteredDoctors.length === 0 ? (
+      "Doctor's Not Available in this City, Please choose Nearest city"
+    ) : (
+      <div>
+        <h3>Available Doctors in {formData.city}</h3>
+        <label>Select Time Slot:</label>
+        <select
+          name="selectedTimeSlot"
+          value={formData.selectedTimeSlot}
+          onChange={handleInputChange}
+        >
+          <option value="">Select a time slot</option>
+          {/* Add options dynamically based on available timings */}
+          {TimeSlots.map((timeSlot) => (
+            <option key={timeSlot} value={timeSlot}>
+              {formatTimeSlot(timeSlot)}
+            </option>
+          ))}
+        </select>
+        <ul>
+          {filteredDoctors.map((doctor) => (
+            <li key={doctor.id}>
+              {doctor.name} - {doctor.expertise}
+              {/* Display doctor's available timings */}
+              <div>
+                <strong>Available Timings:</strong>
+                {doctor.availableTimings.map((timeSlot) => (
+                  <span key={timeSlot}>{formatTimeSlot(timeSlot)}</span>
+                ))}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    )}
+  </div>
+)}
       {step === 3 && <button className='submitbtn' onClick={handleSubmit}>Submit</button>}
     
     </Formdiv>
