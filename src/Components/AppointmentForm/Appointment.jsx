@@ -43,6 +43,7 @@ export default function Appointment() {
       const [filteredDoctors, setFilteredDoctors] = useState([]);
       const TimeSlots=['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
       const [cities,setCities]=useState([]);
+
 const goback=()=>{
   setStep(1);
   setIsSubmitted(false);
@@ -64,12 +65,17 @@ const goback=()=>{
         
         return timeSlot;
       };
+
       const fetchDoctors = async () => {
         try {
           const response = await fetch('https://doctordata-9p14.onrender.com/Doctors');
           const data = await response.json();
+          
               setDoctors(data);
-              setCities(data.map(d => d.city));
+
+              let allcities =data.map(d => d.city);
+              let distinct =new Set(allcities);
+              setCities([...distinct])
               
 
         } catch (error) {
@@ -186,7 +192,7 @@ const goback=()=>{
         <div className='form=data'>
           <label>
             Age
-            <input type="number" name="age" value={formData.age} onChange={handleInputChange} required/>
+            <input type="number" name="age" value={formData.age} maxLength="2" min="1" max="99" onChange={handleInputChange} required/>
           </label>
           
           <label>
