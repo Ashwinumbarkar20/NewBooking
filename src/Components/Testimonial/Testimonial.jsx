@@ -5,16 +5,16 @@ export default function Testimonial() {
   return (
     <Maindiv>
     <h1>Testimonial</h1>
-      <div id="carouselExampleSlidesOnly" className="carousel slide " data-bs-ride="carousel">
+      <div id="carouselExampleAutoplaying" className="carousel slide " data-bs-ride="carousel">
   <div className="carousel-inner">
-    <div className="carousel-item active" data-bs-interval="2000">
+    <div className="carousel-item active" >
     <TestimonialCard
   testimonial={{
     patientName: 'Ankush',
         content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-    <div className="carousel-item" data-bs-interval="2000">
+    <div className="carousel-item" >
     <TestimonialCard
   testimonial={{
     patientName: 'Sudarshan',
@@ -22,7 +22,7 @@ export default function Testimonial() {
     content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-        <div className="carousel-item" data-bs-interval="2000">
+        <div className="carousel-item" >
     <TestimonialCard
   testimonial={{
     patientName: 'Amol',
@@ -30,7 +30,7 @@ export default function Testimonial() {
     content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-    <div className="carousel-item" data-bs-interval="2000">
+    <div className="carousel-item" >
     <TestimonialCard
   testimonial={{
     patientName: 'Ashish',
@@ -38,7 +38,7 @@ export default function Testimonial() {
     content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-    <div className="carousel-item" data-bs-interval="2000">
+    <div className="carousel-item" >
     <TestimonialCard
   testimonial={{
     patientName: 'Ankita',
@@ -46,7 +46,7 @@ export default function Testimonial() {
     content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-    <div className="carousel-item "data-bs-interval="2000">
+    <div className="carousel-item ">
     <TestimonialCard
   testimonial={{
     patientName: 'Anup',
@@ -54,15 +54,8 @@ export default function Testimonial() {
     content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-    <div className="dcarousel-item"data-bs-interval="2000">
-    <TestimonialCard
-  testimonial={{
-    patientName: 'Atul',
     
-    content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
-  }}/>
-    </div>
-    <div className="carousel-item"data-bs-interval="2000">
+    <div className="carousel-item">
     <TestimonialCard
   testimonial={{
     patientName: 'Ajay',
@@ -70,14 +63,13 @@ export default function Testimonial() {
     content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-    <div className="carousel-item "data-bs-interval="2000">
+    <div className="carousel-item ">
     <TestimonialCard
   testimonial={{
     patientName: 'Anant',
         content: 'I had a great experience with the healthcare services. The staff is friendly, and the facilities are excellent.'
   }}/>
     </div>
-
   </div>
   <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleAutoplaying" data-bs-slide="prev">
     <span className="carousel-control-prev-icon" aria-hidden="true"></span>

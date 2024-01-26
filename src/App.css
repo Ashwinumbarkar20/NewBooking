@@ -1,9 +1,9 @@
 :root{
-  --primary-color:hsl(267, 95%, 76%);
-  --secondary-color:#09e6d0;
-  --error-color:#c2eb0c;
-  --surface-color:#323232;
-  --background-color:#121212;
+  --primary-color:#2c2c2c;/*All background*/ 
+  --secondary-color: #FFFFFF; /* text*/
+  --accent-color: #4356FF;/*buttons and link*/ 
+    
+  --error-color: #e74c3c; /* error messages */
   
 }
 

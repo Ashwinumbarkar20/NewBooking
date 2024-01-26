@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 import React, {useEffect,useState}from 'react'
 import styled from 'styled-components'
 
@@ -6,9 +7,9 @@ const ConfirmationComponent = ({ formData,goback }) => {
 
   return (
     <Confirmationdiv className="confirmation">
-      <p>
-        Dear {name}, your booking has been confirmed on {date} at {timeSlot} with
-        {dr}.
+      <p className='confirmationmsg'>
+        Dear {name}, your booking has been confirmed on {date} at {timeSlot} with 
+         {dr}.
       </p>
       <div><p onClick={goback}>Go, Back</p> </div>
     </Confirmationdiv>
@@ -41,7 +42,7 @@ export default function Appointment() {
       const [doctors, setDoctors] = useState([]);
       const [filteredDoctors, setFilteredDoctors] = useState([]);
       const TimeSlots=['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
-      const cities=["Pune","Mumbai","Delhi","Bengaluru","Jaipur","New Delhi","Chennai"];
+      const [cities,setCities]=useState([]);
 const goback=()=>{
   setStep(1);
   setIsSubmitted(false);
@@ -67,8 +68,10 @@ const goback=()=>{
         try {
           const response = await fetch('https://doctordata-9p14.onrender.com/Doctors');
           const data = await response.json();
-    
-          setDoctors(data);
+              setDoctors(data);
+              setCities(data.map(d => d.city));
+              
+
         } catch (error) {
           console.error('Error fetching doctors:', error);
         }
@@ -220,7 +223,7 @@ const goback=()=>{
               onChange={handleInputChange}
             />
           </label>
-          {formData.age<40&&(<label>
+          {formData.age>=40&&(<label>
             <input
               type="checkbox"
               name="experience"
@@ -242,12 +245,12 @@ const goback=()=>{
       </button>
    
     :(step==2)?<>
-    (<button className='previous' onClick={handlePreviousStep} disabled={step === 1} >
+    <button className='previous' onClick={handlePreviousStep} disabled={step === 1} >
         Previous
       </button>
       <button className='next' onClick={handleNextStep} disabled={step === 3}>
         Next
-      </button>)
+      </button>
       </>
    :null    
     }
@@ -308,7 +311,7 @@ const goback=()=>{
         <button className='previous' onClick={handlePreviousStep} disabled={step === 1} >
         Previous
       </button>
-        <button className='submitbtn' onClick={handleSubmit}>Submit</button>
+        <button id='submitbtn' onClick={handleSubmit}>Submit</button>
         
       </div>
       ):
@@ -335,86 +338,69 @@ const Formdiv=styled.div`
  justify-content:space-around;
  align-items:center;
  flex-direction:column;
-  background-color: var(--surface-color);
+  background-color: var(--primary-color);
   border-radius: 10px;
-  border:2px solid var(--secondary-color);
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  border:2px solid var(--accent-color);
+ 
 .Error{
   text-align:center;
-  color:red;
+  color:var(--error-color);
   height:auto;  
-  background-color:var(--surface-color);
+  background-color:var(--primary-color);
 }
   h2 {
     text-align: center;
-    background-color: var(--surface-color);
+    background-color: var(--primary-color);
     padding:10px;
     color:var(--secondary-color);
   }
 
   .form-data {
-    margin-bottom: 5px;
-    background-color: var(--surface-color)
+        background-color: var(--primary-color)
   }
-
   label {
     display: block;
       text-align:center;
-      background-color: var(--surface-color);
+      background-color: var(--primary-color);
     padding:5px;
        color:var(--secondary-color);
     
   }
-
   input,
   textarea,select {
     width: 90%;
     padding: 5px;
     margin: 5px;
     box-sizing: border-box;
-    border: 1px solid #ccc;
-    background-color:transparent;
+    border: 1px solid var(--secondary-color);
+    background-color:var(--primary-color);
     border-radius: 5px;
-    color:var(--error-color)
+    color:var(--secondary-color)
   }
 
   .checkbox-label {
     display: flex;
     align-items: center;
     margin-bottom: 10px;
-    color: #333;
+    color: var(--primary-color);
   }
-
   .checkbox-label input {
     margin-right: 5px;
+    
   }
 
   button {
-    padding: 10px 20px;
-    background-color: var(--secondary-color);
-    font-weight:bold;
-    color: var(--surface-color);
-    border: none;
-    border-radius: 5px;
-    cursor: pointer;
-    transition: background-color 0.3s;
-
-    &:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    &.previous {
-      margin-right: 10px;
-    }
-
-    &.submitbtn {
-      background-color: #28a745;
+    color:var(--secondary-color);
+    padding:5px 10px;
+    border-radius:10px;
+    font-weight:600;
+    border:1px solid var(--secondary-color);
+    background-color:var(--accent-color);
+    transition:all 0.3s ease;
+    &:hover{
+    filter:brightness(1.30);
     }
   }
-
-
- 
   @media (max-width: 600px) {
     .Appointment-form{
       width: 80%;
@@ -422,47 +408,74 @@ const Formdiv=styled.div`
   }
 
   .DrAvailablity{
-    background-color:var(--surface-color);
+    background-color:var(--primary-color);
     margin:10px;
 
 .Not-available{
   font-weight:400;
   text-align:center;
-  background-color:var(--surface-color);
-  color:var(--error-color);
+  background-color:var(--primary-color);
+  color:var(--secondary-color);
 }
   }
   .btn-div{
-    background-color:var(--surface-color);
+    background-color:var(--primary-color);
     display:flex;
     justify-content:center;
     align-items:center;
+    gap:18px;
+  }
 
+  #submitbtn{
+    color:var(--primary-color);
+    padding:5px 10px;
+    text-align:center;
+    border-radius:10px;
+    border:1px solid var(--primary-color);
+    background-color:#3ce6a2;
+    font-weight:600;
+    transition:all 0.3s ease;
+    &:hover{
+    filter:brightness(1.30);
+    }
   }
 `
 const Confirmationdiv=styled.div`
-background-color:transparent;
-
-p{
-  background-color:transparent;
+background-color:var(--primary-color);
+display:flex;
+justify-content:center;
+align-items:center;
+flex-direction:column;
+gap:32px;
+.confirmationmsg{
+  background-color:var(---primary-color);
   width:100%;
-  
-  padding:5px;
-  color:var(--error-color);
-  background-color:transparent;
+   padding:5px;
+   text-align:center;
+   ;
+  color:#3ce6a2;
+
 }
 div{
-  background-color:var(--surface-color);
+  background-color:var(--primary-color);
+  
+
 p{
   text-align:center;
-  background-color:var(--surface-color);
+  background-color:var(--accent-color);
     width:100%;
   padding:5px;
-  color:white;
-  font-size:24px;
+  border:2px solid var(--secondary-color);
+  color:var(--secondary-color);
+  
+  border-radius:10px;
+  font-size:18px;
  font-size:bolder;
-
   cursor: pointer;
+  transition:all 0.3s ease;
+  &:hover{
+    filter:brightness(1.30)
+  }
 }
 }
 `

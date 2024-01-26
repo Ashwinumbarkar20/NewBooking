@@ -27,8 +27,8 @@ const CardContainer = styled.div`
 
 `
 const Innercard=styled.div`
-background-color: var(--surface-color);
-  border: 1px solid #ddd;
+background-color: var(--primary-color);
+  border: 1px solid var(--secondary-color);
   border-radius: 8px;
   padding: 20px;
   margin: 20px;
@@ -50,7 +50,7 @@ object-fit:cover;
 `
 const PatientInfo = styled.div`
   display: flex;
-  background-color: var(--surface-color);
+  background-color: var(--primary-color);
   height:200px;
   justify-content: space-evenly;
   flex-direction:column;
@@ -60,21 +60,20 @@ const PatientInfo = styled.div`
 
 const PatientName = styled.h3`
   font-size: 18px;
-  background-color: var(--surface-color);
-  color: var(--error-color);
+  background-color: var(--primary-color);
+  color: var(--secondary-color);
 `;
 
 
 
 const TestimonialContent = styled.p`
   font-size: 16px;
-  background-color: var(--surface-color);
+  background-color: var(--primary-color);
   width:100%;
-  
   text-align:center;
-  line-height:2;
-  color: var(--error-color);
-  background-color: var(--surface-color);
+ 
+  color: var(--secondary-color);
+  background-color: var(--primary-color);
 `;
 
 export default TestimonialCard;
