@@ -8,8 +8,8 @@ const ConfirmationComponent = ({ formData,goback }) => {
   return (
     <Confirmationdiv className="confirmation">
       <p className='confirmationmsg'>
-        Dear {name}, your booking has been confirmed on {date} at {timeSlot} with 
-         {dr}.
+        {`Dear ${name}, your booking has been confirmed on ${date} at ${timeSlot} with  
+         ${dr}`}.
       </p>
       <div><p onClick={goback}>Go, Back</p> </div>
     </Confirmationdiv>
@@ -19,8 +19,11 @@ const ConfirmationComponent = ({ formData,goback }) => {
 
 export default function Appointment() {
     const [step, setStep] = useState(1);
+
     const [Error,setError]=useState("");
+
     const [isSubmitted, setIsSubmitted] = useState(false);
+
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -34,14 +37,18 @@ export default function Appointment() {
         timeSlot:''
         
       });
+
       let isStep3Complete =
       formData.dr !== '' &&
       formData.date !== '' &&
       formData.timeSlot !== '';
 
       const [doctors, setDoctors] = useState([]);
+
       const [filteredDoctors, setFilteredDoctors] = useState([]);
+
       const TimeSlots=['09:00', '10:00', '11:00', '14:00', '15:00', '16:00'];
+
       const [cities,setCities]=useState([]);
 
 const goback=()=>{
@@ -61,11 +68,8 @@ const goback=()=>{
       
     })
 }
-      const formatTimeSlot = (timeSlot) => {
-        
-        return timeSlot;
-      };
 
+     
       const fetchDoctors = async () => {
         try {
           const response = await fetch('https://doctordata-9p14.onrender.com/Doctors');
@@ -75,6 +79,7 @@ const goback=()=>{
 
               let allcities =data.map(d => d.city);
               let distinct =new Set(allcities);
+              
               setCities([...distinct])
               
 
@@ -86,6 +91,7 @@ const goback=()=>{
         
         fetchDoctors();
       }, []);
+
       const handleInputChange = (e) => {
         const { name, value } = e.target;
         setFormData((prevData) => ({ ...prevData, [name]: value }));
@@ -96,19 +102,27 @@ const goback=()=>{
       };
       const handleNextStep = () => {
         if (step < 3 ||step < 2) {
+
           if (formData.name.trim() === '' || formData.phone.trim() === '') {
             setError("Please fill in all the required fields");
-          } else if (!/^\d+$/.test(formData.phone)) {
+          } 
+          else if (!/^\d+$/.test(formData.phone))
+          {
             setError("Phone number contain only numbers");
           } 
-          else if (step === 2 && (isNaN(formData.age) || formData.age <= 0)) {
+
+          else if (step === 2 && (isNaN(formData.age) || formData.age <= 0)) 
+          {
             setError("Please enter a valid age");
-          } else if (step === 2 && formData.city === '') {
+          } 
+          else if (step === 2 && formData.city === '') 
+          {
             setError("Please select a city")}
-          
-          else {
+            else {
             setError(""); 
+
             setStep((prevStep) => prevStep + 1);
+
             const filtered = doctors.filter((doctor) => doctor.city === formData.city);
             setFilteredDoctors(filtered);
           }
@@ -240,7 +254,6 @@ const goback=()=>{
             
           </label>)}
 
-          
         </div>
       )}
       <div className='btn-div' style={{"background-color": "var(--surface-color)"}}>
@@ -305,7 +318,7 @@ const goback=()=>{
           {/* Add options dynamically based on available timings */}
           {TimeSlots.map((timeSlot) => (
             <option key={timeSlot} value={timeSlot}>
-              {formatTimeSlot(timeSlot)}
+              {timeSlot}
             </option>
           ))}
         </select>

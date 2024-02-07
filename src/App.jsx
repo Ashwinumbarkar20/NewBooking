@@ -1,18 +1,23 @@
 import { useState } from 'react'
-import Navbar from './Components/Navbar/Navbar'
-import Herosection from './Components/HeroSection/Herosection'
-
+import { Routes, Route } from "react-router-dom"
+import Home from './Pages/Home'
 import './App.css'
-import Testmonials from './Components/Testimonial/Testimonial'
+
+
 
 function App() {
   
 
   return (
     <>
-      <Navbar/>
-      <Herosection/>
-      <Testmonials/>
+
+<Routes>
+        <Route path="/" element={ <Home/> } />
+        {/* <Route path="about" element={ <About/> } />
+        <Route path="contact" element={ <Contact/> } /> */}
+      </Routes>
+
+      
     </>
   )
 }

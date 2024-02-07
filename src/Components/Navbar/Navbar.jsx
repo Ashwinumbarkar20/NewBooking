@@ -1,20 +1,27 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import styled from 'styled-components'
 import logo from '../../assets/logo.png'
-import { GiHamburgerMenu } from "react-icons/gi";
+import {Link} from 'react-router-dom'
+import { FixhealthContext } from '../../Context'
 export default function Navbar() {
+  
+  const {handleLoginbtn,isloggedin,handleLogout} =useContext(FixhealthContext);
+
   return (
     <Navbardiv >
      <nav className="navbar navbar-expand-lg">
         <div className="container-fluid">
      
-
           <a className="navbar-brand" href="#">
             <img src={logo} alt="Logo" />
           </a>
 
           
-<div><button className="book-now">Book Now</button></div>
+<div>
+{isloggedin?(<button className="login" onClick={handleLogout}>Logout</button>):
+<button className="login" onClick={handleLoginbtn}>Login</button>}
+
+</div>
         </div>
       </nav>
     </Navbardiv>
@@ -35,10 +42,8 @@ nav {
     width: 99px; 
     height: 35px;
   }
-
  
- 
-.book-now{
+.login{
     color:var(--secondary-color);
     padding:5px 10px;
     border-radius:10px;
