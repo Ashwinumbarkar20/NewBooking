@@ -9,6 +9,7 @@ const DataProvider = ({children}) => {
     const[isloggedin,setIsloggedin]=useState(false);
     const[error,setError]=useState("");
     const[users,setUsers]=useState([]);
+    const[currentUser,setCurrentUser]=useState(null);
 const[logindata,setLoginData]=useState({
     email:"",
     password:""

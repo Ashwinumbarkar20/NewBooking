@@ -1,7 +1,7 @@
 :root{
   --primary-color:#2c2c2c;/*All background*/ 
   --secondary-color: #FFFFFF; /* text*/
-  --accent-color: #4356FF;/*buttons and link*/ 
+  --accent-color: #F25F5C;/*buttons and link*/ 
   --error-color: #e74c3c; /* error messages */
   
 }
