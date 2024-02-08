@@ -3,10 +3,11 @@ import styled from 'styled-components'
 import logo from '../../assets/logo.png'
 import {Link} from 'react-router-dom'
 import { FixhealthContext } from '../../Context'
+import { FaUserCircle } from "react-icons/fa";
 export default function Navbar() {
   
-  const {handleLoginbtn,isloggedin,handleLogout} =useContext(FixhealthContext);
-
+  const {handleLoginbtn,isloggedin,handleLogout,currentUser} =useContext(FixhealthContext);
+console.log(currentUser)
   return (
     <Navbardiv >
      <nav className="navbar navbar-expand-lg">
@@ -16,6 +17,7 @@ export default function Navbar() {
             <img src={logo} alt="Logo" />
           </a>
 
+{currentUser && <div><FaUserCircle style={{fontSize:"24px"}}/><span> {currentUser}</span></div>}
           
 <div>
 {isloggedin?(<button className="login" onClick={handleLogout}>Logout</button>):

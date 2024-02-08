@@ -7,7 +7,7 @@ export default function Doctor() {
   const [selectedDaytime, setSelectedDaytime] = useState(null);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
   const daytime = ["Morning", "Afternoon", "Evening"];
-
+  const { getNextWeekDates,setAvailSlots,currentUser } = useContext(FixhealthContext);
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     
@@ -15,14 +15,34 @@ export default function Doctor() {
 
   const handleDaytimeSelect = (time) => {
     setSelectedDaytime(time);
-    setSelectedTimeSlots([]);
+    //setSelectedTimeSlots([]);
   };
 
   const handleTimeSlotSelect = (slot) => {
-    setSelectedTimeSlots((prevSelectedSlots) => [
-      ...prevSelectedSlots,
-      { date: selectedDate.toDateString(), time: selectedDaytime, slot },
-    ]);
+    const isSlotSelected = selectedTimeSlots.some(
+      (selectedSlot) =>
+        selectedSlot.date === selectedDate.toDateString() &&
+        selectedSlot.time === selectedDaytime &&
+        selectedSlot.slot === slot
+    );
+  
+    if (isSlotSelected) {
+      // Remove the slot if already selected
+      setSelectedTimeSlots((prevSelectedSlots) =>
+        prevSelectedSlots.filter(
+          (selectedSlot) =>
+            !(selectedSlot.date === selectedDate.toDateString() &&
+              selectedSlot.time === selectedDaytime &&
+              selectedSlot.slot === slot)
+        )
+      );
+    } else {
+      // Add the slot if not already selected
+      setSelectedTimeSlots((prevSelectedSlots) => [
+        ...prevSelectedSlots,
+        { date: selectedDate.toDateString(), time: selectedDaytime, slot },
+      ]);
+    }
   };
 
   const renderTimeSlots = () => {
@@ -88,7 +108,10 @@ export default function Doctor() {
     }
   };
 
-  const { getNextWeekDates } = useContext(FixhealthContext);
+  const saveAvailblity = () => {
+    setAvailSlots((prev) => [...prev, { user: currentUser, slots: selectedTimeSlots }]);
+  };
+  
 
   const days = getNextWeekDates();
 
@@ -160,7 +183,7 @@ export default function Doctor() {
         </div>
 
         <div className="save">
-          <button>Save Availblity</button>
+          <button onClick={saveAvailblity}>Save Availblity</button>
         </div>
       </div>
     </Mainsection>

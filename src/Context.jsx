@@ -10,6 +10,7 @@ const DataProvider = ({children}) => {
     const[error,setError]=useState("");
     const[users,setUsers]=useState([]);
     const[currentUser,setCurrentUser]=useState(null);
+    const[availSlots,setAvailSlots]=useState([]);
 const[logindata,setLoginData]=useState({
     email:"",
     password:""
@@ -55,11 +56,15 @@ const getNextWeekDates = () => {
 if(!user)
 {
     setError(true);
+    
+   
     setUsertype("");
 }
 else{
     setUsertype(user.role);
+    setCurrentUser(user.username);
     setShowlogin(false);
+    
     setIsloggedin(true);
 }
    
@@ -69,7 +74,7 @@ else{
         setUsertype("");
         setShowlogin(false);
         setIsloggedin(false);
-
+        setCurrentUser(null);
     }
     const getusers=async (url)=>{
         try{
@@ -97,7 +102,7 @@ else{
         setIsloggedin,
         handlelogin,
         handleLogout,
-        error,setError,logindata,handleLoginFormdata,getNextWeekDates
+        error,setError,logindata,currentUser,handleLoginFormdata,getNextWeekDates,availSlots,setAvailSlots
         }}>{children}
         </FixhealthContext.Provider>
     );
