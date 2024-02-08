@@ -33,7 +33,22 @@ const { name, value } = e.target;
             [name]: value
         }));
 }
+const getNextWeekDates = () => {
+    const today = new Date();
+    const nextSunday = new Date(today);
 
+     nextSunday.setDate(today.getDate() + (7 - today.getDay()));
+
+  
+    const nextWeekAvailability = [];
+    for (let i = 0; i < 7; i++) {
+      const nextDate = new Date(nextSunday);
+      nextDate.setDate(nextSunday.getDate() + i);
+      nextWeekAvailability.push(nextDate);
+    }
+
+    return nextWeekAvailability;
+  };
     const handlelogin=(e)=>{
         e.preventDefault();
                 const user=users.find((u)=>u.username===logindata.email && u.password===logindata.password);
@@ -82,7 +97,7 @@ else{
         setIsloggedin,
         handlelogin,
         handleLogout,
-        error,setError,logindata,handleLoginFormdata
+        error,setError,logindata,handleLoginFormdata,getNextWeekDates
         }}>{children}
         </FixhealthContext.Provider>
     );

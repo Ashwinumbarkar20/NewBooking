@@ -32,7 +32,7 @@ const Navbardiv=styled.div`
   height: 70px;
 }
 nav {
-    background-color: var(--primary-color);
+    
     padding: 0;
     height: 70px;   
     color: var(--secondary-color);
