@@ -2,16 +2,30 @@ import React, { useContext, useState } from "react";
 import styled from "styled-components";
 import timeSlots from "../../Slots.json";
 import { FixhealthContext } from "../../Context";
+import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css';
 export default function Doctor() {
   const [selectedDate, setSelectedDate] = useState(null);
   const [selectedDaytime, setSelectedDaytime] = useState(null);
   const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
+  const [isSunday,setIsSunday]=useState(true);
   const daytime = ["Morning", "Afternoon", "Evening"];
+  const weekdays = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+
+  const d = new Date();
+  let day = weekdays[d.getDay()]
+  
+  if(day==="Sunday")
+  {
+    setIsSunday(true);
+  }
+
   const { getNextWeekDates,setAvailSlots,currentUser } = useContext(FixhealthContext);
   const handleDateSelect = (date) => {
     setSelectedDate(date);
     
   };
+  
 
   const handleDaytimeSelect = (time) => {
     setSelectedDaytime(time);
@@ -110,83 +124,89 @@ export default function Doctor() {
 
   const saveAvailblity = () => {
     setAvailSlots((prev) => [...prev, { user: currentUser, slots: selectedTimeSlots }]);
+    toast.success("Availability saved successfully!");
+    setIsSunday(false);
   };
-  
+ 
 
   const days = getNextWeekDates();
 
   return (
-    <Mainsection>
-      <div className="Appointments">Appointments</div>
+    <>
+(<Mainsection>
+  <div className="Appointments">Appointments</div>
+{isSunday && <div className="Slot-Availiblity">
+    <p style={{ textAlign: "center", color: `var(--accent-color)` }}>
+      Select the Day
+    </p>
 
-      <div className="Slot-Availiblity">
-        <p style={{ textAlign: "center", color: `var(--accent-color)` }}>
-          Select the Day
+    <div className="Days">
+      {days.map((day) => (
+        <span
+          style={{ textAlign: "center" }}
+          className={`day ${
+            selectedDate &&
+            selectedDate.toDateString() === day.toDateString()
+              ? "active"
+              : ""
+          }`}
+          key={day}
+          onClick={() => handleDateSelect(day)}
+        >
+          {day.toDateString()}
+        </span>
+      ))}
+    </div>
+
+    {handleDateSelect && (
+      <>
+        <p
+          style={{
+            textAlign: "center",
+            color: `var(--accent-color)`,
+            margin: "10px",
+          }}
+        >
+          Select Time Zone
         </p>
 
-        <div className="Days">
-          {days.map((day) => (
+        <div className="Day-Time">
+          {daytime.map((time) => (
             <span
-              style={{ textAlign: "center" }}
-              className={`day ${
-                selectedDate &&
-                selectedDate.toDateString() === day.toDateString()
-                  ? "active"
-                  : ""
-              }`}
-              key={day}
-              onClick={() => handleDateSelect(day)}
+              className={`day ${selectedDaytime === time ? "active" : ""}`}
+              key={time}
+              onClick={() => handleDaytimeSelect(time)}
             >
-              {day.toDateString()}
+              {time}
             </span>
           ))}
         </div>
+      </>
+    )}
 
-        {handleDateSelect && (
-          <>
-            <p
-              style={{
-                textAlign: "center",
-                color: `var(--accent-color)`,
-                margin: "10px",
-              }}
-            >
-              Select Time Zone
-            </p>
+    <div className="time-Slots">
+      <p
+        style={{
+          textAlign: "center",
+          color: `var(--accent-color)`,
+          margin: "10px",
+        }}
+      >
+        Select Time slot
+      </p>
 
-            <div className="Day-Time">
-              {daytime.map((time) => (
-                <span
-                  className={`day ${selectedDaytime === time ? "active" : ""}`}
-                  key={time}
-                  onClick={() => handleDaytimeSelect(time)}
-                >
-                  {time}
-                </span>
-              ))}
-            </div>
-          </>
-        )}
+      <ul className="time-slot-list">{renderTimeSlots()}</ul>
+    </div>
 
-        <div className="time-Slots">
-          <p
-            style={{
-              textAlign: "center",
-              color: `var(--accent-color)`,
-              margin: "10px",
-            }}
-          >
-            Select Time slot
-          </p>
-
-          <ul className="time-slot-list">{renderTimeSlots()}</ul>
-        </div>
-
-        <div className="save">
-          <button onClick={saveAvailblity}>Save Availblity</button>
-        </div>
-      </div>
-    </Mainsection>
+    <div className="save">
+      <button onClick={saveAvailblity}>Save Availblity</button>
+    </div>
+  </div>}
+  
+  
+</Mainsection>)
+<ToastContainer />
+    </>
   );
 }
 const Mainsection = styled.section`

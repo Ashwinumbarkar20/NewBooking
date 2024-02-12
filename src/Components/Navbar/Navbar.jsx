@@ -7,7 +7,7 @@ import { FaUserCircle } from "react-icons/fa";
 export default function Navbar() {
   
   const {handleLoginbtn,isloggedin,handleLogout,currentUser} =useContext(FixhealthContext);
-console.log(currentUser)
+
   return (
     <Navbardiv >
      <nav className="navbar navbar-expand-lg">

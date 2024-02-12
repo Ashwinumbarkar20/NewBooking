@@ -1,10 +1,11 @@
 import React, { useContext, useEffect } from "react";
-
+ import { ToastContainer, toast } from 'react-toastify';
+  import 'react-toastify/dist/ReactToastify.css'; 
 import { FixhealthContext } from "../../Context";
 import styled from "styled-components";
 export default function Login() {
 
-  const { setShowlogin,logindata,handleLoginFormdata } = useContext(FixhealthContext);
+  const { setShowlogin,logindata,handleLoginFormdata,handlelogin,error } = useContext(FixhealthContext);
 
 
   const handleback = (e) => {
@@ -12,7 +13,7 @@ export default function Login() {
     setShowlogin(false);
   };
 
-  const { handlelogin,error } = useContext(FixhealthContext);
+  
   return (
     <>
       <Maindiv>
@@ -37,7 +38,10 @@ export default function Login() {
            
         </form>
         <p>{error?"Incorrect Details":""}</p>
+        
       </Maindiv>
+      <ToastContainer/>
+      
     </>
   );
 }

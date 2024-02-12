@@ -1,6 +1,8 @@
 /* eslint-disable react/prop-types */
 import React, { useState, createContext, useEffect } from 'react';
+import { ToastContainer, toast } from 'react-toastify';
 import Login from './Components/Login/Login';
+import 'react-toastify/dist/ReactToastify.css';
 export const FixhealthContext = createContext();
 
 const DataProvider = ({children}) => {
@@ -34,6 +36,7 @@ const { name, value } = e.target;
             [name]: value
         }));
 }
+
 const getNextWeekDates = () => {
     const today = new Date();
     const nextSunday = new Date(today);
@@ -50,31 +53,33 @@ const getNextWeekDates = () => {
 
     return nextWeekAvailability;
   };
+
     const handlelogin=(e)=>{
         e.preventDefault();
                 const user=users.find((u)=>u.username===logindata.email && u.password===logindata.password);
 if(!user)
 {
     setError(true);
-    
-   
     setUsertype("");
 }
 else{
+    toast("Logged in Sucessfully!");
     setUsertype(user.role);
     setCurrentUser(user.username);
     setShowlogin(false);
-    
     setIsloggedin(true);
+    
 }
    
     }
 
     const handleLogout=()=>{
+        toast("Logged out Successfully");
         setUsertype("");
         setShowlogin(false);
         setIsloggedin(false);
         setCurrentUser(null);
+       
     }
     const getusers=async (url)=>{
         try{
@@ -88,23 +93,23 @@ else{
     }
     useEffect(()=>{
         getusers("https://doctordata-9p14.onrender.com/users");
-
+    
 
     },[])
 
     return (
+        <>
         <FixhealthContext.Provider value={{
         usertype,
-        setUsertype,
-        handleLoginbtn,
-        showlogin, setShowlogin,
-        isloggedin,
-        setIsloggedin,
-        handlelogin,
-        handleLogout,
-        error,setError,logindata,currentUser,handleLoginFormdata,getNextWeekDates,availSlots,setAvailSlots
+        setUsertype,handleLoginbtn,showlogin, setShowlogin,isloggedin,
+        setIsloggedin,handlelogin,handleLogout,error,setError,
+        logindata,currentUser,handleLoginFormdata,getNextWeekDates,
+        availSlots,setAvailSlots
         }}>{children}
+        <ToastContainer />
         </FixhealthContext.Provider>
+       
+        </>
     );
 }
 export default DataProvider;
