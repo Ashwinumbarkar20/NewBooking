@@ -158,7 +158,7 @@ export default function Doctor() {
       ))}
     </div>
 
-    {handleDateSelect && (
+    {selectedDate && (
       <>
         <p
           style={{
@@ -184,8 +184,9 @@ export default function Doctor() {
       </>
     )}
 
-    <div className="time-Slots">
-      <p
+   <div className="time-Slots">
+   {selectedDaytime&&
+    <h4
         style={{
           textAlign: "center",
           color: `var(--accent-color)`,
@@ -193,19 +194,20 @@ export default function Doctor() {
         }}
       >
         Select Time slot
-      </p>
+      </h4>}
+      
 
       <ul className="time-slot-list">{renderTimeSlots()}</ul>
     </div>
 
     <div className="save">
-      <button onClick={saveAvailblity}>Save Availblity</button>
+      <button disabled={selectedTimeSlots.length === 0}  onClick={saveAvailblity}>Save Availblity</button>
     </div>
   </div>}
   
-  
+  <ToastContainer />
 </Mainsection>)
-<ToastContainer />
+
     </>
   );
 }

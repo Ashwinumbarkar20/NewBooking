@@ -63,7 +63,7 @@ if(!user)
     setUsertype("");
 }
 else{
-    toast("Logged in Sucessfully!");
+
     setUsertype(user.role);
     setCurrentUser(user.username);
     setShowlogin(false);
@@ -74,7 +74,7 @@ else{
     }
 
     const handleLogout=()=>{
-        toast("Logged out Successfully");
+        
         setUsertype("");
         setShowlogin(false);
         setIsloggedin(false);
@@ -106,7 +106,7 @@ else{
         logindata,currentUser,handleLoginFormdata,getNextWeekDates,
         availSlots,setAvailSlots
         }}>{children}
-        <ToastContainer />
+        
         </FixhealthContext.Provider>
        
         </>
