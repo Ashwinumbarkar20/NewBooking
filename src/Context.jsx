@@ -25,8 +25,7 @@ const[logindata,setLoginData]=useState({
         setLoginData({
             email:"",
             password:""
-        
-        });
+                });
 
     }
 const handleLoginFormdata=(e)=>{

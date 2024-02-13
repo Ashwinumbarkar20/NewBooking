@@ -14,8 +14,7 @@ export default function Doctor() {
 
   const d = new Date();
   let day = weekdays[d.getDay()]
-  
-  if(day==="Sunday")
+    if(day==="Sunday")
   {
     setIsSunday(true);
   }
