@@ -3,168 +3,193 @@
     import { FixhealthContext } from '../../Context'
 
     export default function Sales() {
-      const[selectedDoctor,setSelectedDoctor]=useState("");
-      const {availSlots}=useContext(FixhealthContext);
-      const doctors=availSlots.map((data)=>data.user);
-      const daytime = ["Morning", "Afternoon", "Evening"];
-      const [currentDoctorSlots,setCurrentDoctorSlots]=useState([]);
-      const [availableDates, setAvailableDates] = useState([]);
-      const [selectedTimeZone, setSelectedTimeZone] = useState("");
-      const [selectedDate,setSelectedDate]=useState("");
-    if(selectedDoctor==="Select the Doctor"){setSelectedDoctor("")}
-
-    useEffect(() => {
-      if (availSlots && availSlots.length > 0 && selectedDoctor !== "" && selectedDate !== "") {
-        const slot = availSlots.find((data) => data.user === selectedDoctor);
-        if (slot) {
-          let filteredSlots = slot.slots.filter((slot) => slot.date === selectedDate);
-          if (selectedTimeZone !== "") {
-            filteredSlots = filteredSlots.filter((slot) => slot.time === selectedTimeZone);
-          }
-          setCurrentDoctorSlots(filteredSlots);
-        } else {
-          setCurrentDoctorSlots([]);
-        }
-      }
-    }, [selectedDoctor, selectedDate, selectedTimeZone, availSlots]);
-
-    useEffect(() => {
+      const { availSlots } = useContext(FixhealthContext);
+      const [selectedDate, setSelectedDate] = useState('');
+      const [selectedTimeOfDay, setSelectedTimeOfDay] = useState('');
+      const [uniqueDates, setUniqueDates] = useState([]);
+      const [timeSlots, setTimeSlots] = useState([]);
+  
       
-      const dates = [...new Set(availSlots.flatMap((data) => data.slots.map((slot) => slot.date)))];
-      setAvailableDates(dates);
+      useEffect(() => {
+        if (selectedDate && selectedTimeOfDay) {
+         
+            const filteredSlots = availSlots.reduce((acc, user) => {
+                const userSlots = user.slots.filter(
+                    slot => slot.date === selectedDate && slot.time === selectedTimeOfDay
+                );
+                return [...acc, ...userSlots];
+            }, []);
+
+            
+            const uniqueSlots = {};
+            filteredSlots.forEach(slot => {
+                const key = slot.slot;
+                if (uniqueSlots[key]) {
+                    uniqueSlots[key].qty += 1;
+                } else {
+                    uniqueSlots[key] = { ...slot, qty: 1 };
+                }
+            });
+       
+            const uniqueSlotArray = Object.values(uniqueSlots);
+
+            setTimeSlots(uniqueSlotArray);
+        }
+    }, [selectedDate, selectedTimeOfDay, availSlots]);
+      useEffect(() => {
+        
+        const dates = Array.from(new Set(availSlots.flatMap(user => user.slots.map(slot => slot.date))));
+        const sortedDates = dates.sort((a, b) => new Date(a) - new Date(b));
+        setUniqueDates(sortedDates);
     }, [availSlots]);
-
-    const handleDoctorChange = (e) => {
-      const value = e.target.value;
-      setSelectedDoctor(value === "Select the Doctor" ? "" : value);
-      setSelectedDate("");
-      setCurrentDoctorSlots([]);
-    };
+  
+      
+      const handleDateChange = (e) => {
+          setSelectedDate(e.target.value);
+           setSelectedTimeOfDay('');
+          setTimeSlots([]);
+      };
+  
+      
+      const handleTimeOfDayChange = (e) => {
+          setSelectedTimeOfDay(e.target.value);
+      };
+  
       return (
-        <SalesSection>
-      <div className='select-Doctor'>
-        <h4>Select the Doctor</h4>
-        <select name="Doctor" value={selectedDoctor} onChange={handleDoctorChange}>
-          <option key="Select the Doctor" value="">Select the Doctor</option>
-          {doctors.map((doctor) => <option key={doctor} value={doctor}>{doctor.slice(0, -11)}</option>)}
-        </select>
-      </div>
+          <SalesSection>
 
-      {selectedDoctor && (
-        <div className='select-Date'>
-          <h4>Select Date</h4>
-          <select name="Date" value={selectedDate} onChange={(e) => setSelectedDate(e.target.value)}>
-            <option key="Select Date" value="">Select Date</option>
-            {availableDates.map((date) => <option key={date} value={date}>{date}</option>)}
-          </select>
-        </div>
-      )}
+               <DateSelector>
+                <h4 htmlFor="date">Select Date</h4>
+                <select id="date" value={selectedDate} onChange={handleDateChange}>
+                    <option value="">-- Select Date --</option>
+                    {uniqueDates.map(date => (
+                        <option key={date} value={date}>
+                            {date}
+                        </option>
+                    ))}
+                </select>
+            </DateSelector>
 
-      {selectedDoctor && selectedDate && (
-        <div className='Time-Zone'>
-          <h4>Select Time Zone</h4>
-          <div className='Day-Time'>
-            {daytime.map((time) => (
-              <span
-                className={`day ${selectedTimeZone === time ? 'selected' : ''}`}
-                key={time}
-                onClick={() => setSelectedTimeZone(time)}
-              >
-                {time}
-              </span>
-            ))}
-          </div>
-        </div>
-      )}
+              {selectedDate && (
+                  <TimeOfDaySelector>
+                      <h4 htmlFor="timeOfDay">Select Time of Day</h4>
+                      <select
+                          id="timeOfDay"
+                          value={selectedTimeOfDay}
+                          onChange={handleTimeOfDayChange}
+                      >
+                          <option value="">-- Select Time of Day --</option>
+                          <option value="Morning">Morning</option>
+                          <option value="Afternoon">Afternoon</option>
+                          <option value="Evening">Evening</option>
+                      </select>
+                  </TimeOfDaySelector>
+              )}
 
-      {selectedDoctor && selectedDate && currentDoctorSlots.length > 0 && (
-        <div className='Available-Slots'>
-          <h4>Available Time Slots for {selectedDate}</h4>
-          <div className='Time-slots-list'>
-            {currentDoctorSlots.map((slot, index) => (
-              <div className="Timeslot" key={index}>
-                <p>Time: {slot.slot}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      )}
-    </SalesSection>
+              {selectedDate && selectedTimeOfDay && (
+                  <TimeSlots>
+                      <h3>Available Time Slots</h3>
+                      <SlotsList>
+                          {timeSlots.map((slot, index) => (
+                              <SlotItem className="slot-item"key={index}>
+                              {slot.slot} -  {slot.qty} slot(S)
+                              </SlotItem>
+                          ))}
+                      </SlotsList>
+                  </TimeSlots>
+              )}
 
-      )
-    }
-    const SalesSection=styled.section`
-    height:90vh;
-    display:flex;
-      justify-content:flex-start;
-      flex-direction:column;
-      align-items:center;
-    .select-Doctor{
-      max-width:50%;
-      width:50%;
-      padding:10px;
-      margin:5px;
-      display:flex;
-      justify-content:center;
-      flex-direction:column;
-      align-items:center;
-      gap:24px;
-    select{
-      padding:5px;
-      width:80%;
-      border-radius:15px;
-      option{
-        background-color:#212529;  
-        padding:10px;
-        margin:5px;
-      }
-    }
-    }
-    h4{
-      margin:10px;
+          </SalesSection>
+      );
+  }
+  
+  const SalesSection = styled.section`
+  display:flex;
+  margin:auto;
+  padding:10px;
+  max-width:90vh;
+  height:90vh;
+  justify-content:flex-start;
+  align-items:center;
+  flex-direction:column;
+  gap:24px;
+  
+  
+  `;
+  
+  const DateSelector = styled.div`
+      margin-bottom: 20px;
       text-align:center;
-    }
-    .Day-Time {
-        display: flex;
-        justify-content: center;
-        gap: 10px;
-
-        .day {
-          border: 1px solid grey;
-          margin: 10px;
-          padding: 5px 10px;
-          border-radius: 10px;
-          cursor: pointer;
-          transition: all 0.2s ease;
-          &:hover {
-            background-color: var(--accent-color);
-          }
-        }
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      select{
+        padding:10px;
+        border:1px solid var(--secondary-color);
+        border-radius:15px;
       }
-      .Available-Slots{
-        .Time-slots-list{
-          display:flex;
-          justify-content:center;
-          flex-wrap:wrap;
-          gap:32px;
-          margin:10px;
-          
-          .Timeslot{
-          padding:5px;
-          cursor: pointer;
-          border:1px solid var(--secondary-color);
-          border-radius:10px;
-          &:hover{
-    background-color:var(--accent-color);
-          }
-        }
-        }
-        h4{
-          text-align:center;
-          margin:20px;
-          padding:10px;
-        }
+      option{
+        background-color:#212529;
+        text-align:center;
+        padding:50px;
+
+      }
+  `;
+  
+  const TimeOfDaySelector = styled.div`
+      margin-bottom: 20px;
+      text-align:center;
+      display:flex;
+      flex-direction:column;
+      gap:18px;
+      select{
+        padding:10px;
+        border:1px solid var(--secondary-color);
+        border-radius:15px;
         
       }
+      option{
+        background-color:#212529;
+        text-align:center;
+      }
+  `;
+  
+  const TimeSlots = styled.div`
+      max-width:80%;
+      width:80%;
+      overflow-y:auto; 
+      
+      display:flex;
+      justify-content:center;
 
-    `
+      align-items:center;
+      flex-direction:column;
+      gap:24px;
+      `;
+  
+  const SlotsList = styled.ul`
+      list-style: none;
+      padding: 0;
+      display:flex;
+      flex-wrap: wrap;
+      justify-content:center;
+      align-items:center;
+      gap:8px;
+  `;
+  
+  const SlotItem = styled.li`
+      
+      font-size: 14px;
+      margin-bottom: 5px;
+      border:1px solid var(--secondary-color);
+      text-align:center;
+      padding:10px 15px;
+      cursor: pointer;
+
+      border-radius:10px;
+      &:hover{
+        background-color:var(--accent-color);
+
+      }
+      
+  `;
