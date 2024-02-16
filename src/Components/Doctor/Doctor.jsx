@@ -49,77 +49,157 @@ export default function Doctor() {
               selectedSlot.slot === slot)
         )
       );
+  
+      // Remove the "disabled" class from the next two slots
+      const allSlots = document.querySelectorAll('.time-slot-list li');
+      const selectedSlots = timeSlots[selectedDaytime];
+      if (selectedSlots) {
+        const slotIndex = selectedSlots.indexOf(slot);
+        if (slotIndex !== -1 && slotIndex < selectedSlots.length - 2) {
+          for (let i = 1; i <= 2; i++) {
+            const nextSlot = allSlots[slotIndex + i];
+            if (nextSlot) {
+              nextSlot.classList.remove("disabled");
+            }
+          }
+        }
+      }
     } else {
       // Add the slot if not already selected
       setSelectedTimeSlots((prevSelectedSlots) => [
         ...prevSelectedSlots,
         { date: selectedDate.toDateString(), time: selectedDaytime, slot },
       ]);
+  
+      // Add the "disabled" class to the next two slots
+      const allSlots = document.querySelectorAll('.time-slot-list li');
+      const selectedSlots = timeSlots[selectedDaytime];
+      if (selectedSlots) {
+        const slotIndex = selectedSlots.indexOf(slot);
+        if (slotIndex !== -1 && slotIndex < selectedSlots.length - 2) {
+          for (let i = 1; i <= 2; i++) {
+            const nextSlot = allSlots[slotIndex + i];
+            if (nextSlot) {
+              nextSlot.classList.add("disabled");
+            }
+          }
+        }
+      }
     }
   };
 
+  // const renderTimeSlots = () => {
+  //   if (selectedDaytime === "Morning") {
+  //     return timeSlots.morning.map((slot) => (
+  //       <li
+  //         key={slot}
+  //         className={
+  //           selectedTimeSlots.some(
+  //             (selectedSlot) =>
+  //               selectedSlot.date === selectedDate.toDateString() &&
+  //               selectedSlot.time === selectedDaytime &&
+  //               selectedSlot.slot === slot
+  //           )
+  //             ? "active"
+  //             : ""
+  //         }
+  //         onClick={() => handleTimeSlotSelect(slot)}
+  //       >
+  //         {slot}
+  //       </li>
+  //     ));
+  //   } else if (selectedDaytime === "Afternoon") {
+  //     return timeSlots.afternoon.map((slot) => (
+  //       <li
+  //         key={slot}
+  //         className={
+  //           selectedTimeSlots.some(
+  //             (selectedSlot) =>
+  //               selectedSlot.date === selectedDate.toDateString() &&
+  //               selectedSlot.time === selectedDaytime &&
+  //               selectedSlot.slot === slot
+  //           )
+  //             ? "active"
+  //             : ""
+  //         }
+  //         onClick={() => handleTimeSlotSelect(slot)}
+  //       >
+  //         {slot}
+  //       </li>
+  //     ));
+  //   } else if (selectedDaytime === "Evening") {
+  //     return timeSlots.evening.map((slot) => (
+  //       <li
+  //         key={slot}
+  //         className={
+  //           selectedTimeSlots.some(
+  //             (selectedSlot) =>
+  //               selectedSlot.date === selectedDate.toDateString() &&
+  //               selectedSlot.time === selectedDaytime &&
+  //               selectedSlot.slot === slot
+  //           )
+  //             ? "active"
+  //             : ""
+  //         }
+  //         onClick={() => handleTimeSlotSelect(slot)}
+  //       >
+  //         {slot}
+  //       </li>
+  //     ));
+  //   } else {
+  //     return null;
+  //   }
+  // };
+
+  
+  
   const renderTimeSlots = () => {
+    let allSlots = [];
+    
     if (selectedDaytime === "Morning") {
-      return timeSlots.morning.map((slot) => (
-        <li
-          key={slot}
-          className={
-            selectedTimeSlots.some(
-              (selectedSlot) =>
-                selectedSlot.date === selectedDate.toDateString() &&
-                selectedSlot.time === selectedDaytime &&
-                selectedSlot.slot === slot
-            )
-              ? "active"
-              : ""
-          }
-          onClick={() => handleTimeSlotSelect(slot)}
-        >
-          {slot}
-        </li>
-      ));
+      allSlots = timeSlots.morning;
     } else if (selectedDaytime === "Afternoon") {
-      return timeSlots.afternoon.map((slot) => (
-        <li
-          key={slot}
-          className={
-            selectedTimeSlots.some(
-              (selectedSlot) =>
-                selectedSlot.date === selectedDate.toDateString() &&
-                selectedSlot.time === selectedDaytime &&
-                selectedSlot.slot === slot
-            )
-              ? "active"
-              : ""
-          }
-          onClick={() => handleTimeSlotSelect(slot)}
-        >
-          {slot}
-        </li>
-      ));
+      allSlots = timeSlots.afternoon;
     } else if (selectedDaytime === "Evening") {
-      return timeSlots.evening.map((slot) => (
-        <li
-          key={slot}
-          className={
-            selectedTimeSlots.some(
-              (selectedSlot) =>
-                selectedSlot.date === selectedDate.toDateString() &&
-                selectedSlot.time === selectedDaytime &&
-                selectedSlot.slot === slot
-            )
-              ? "active"
-              : ""
-          }
-          onClick={() => handleTimeSlotSelect(slot)}
-        >
-          {slot}
-        </li>
-      ));
+      allSlots = timeSlots.evening;
     } else {
       return null;
     }
+  
+    const selectedSlots = selectedTimeSlots.map(slot => slot.slot);
+  
+    return allSlots.map((slot, index) => {
+      const isActive = selectedTimeSlots.some(
+        (selectedSlot) =>
+          selectedSlot.date === selectedDate.toDateString() &&
+          selectedSlot.time === selectedDaytime &&
+          selectedSlot.slot === slot
+      );
+  
+      const isDisabled = !isActive && (
+        selectedSlots.includes(allSlots[index - 1]) ||
+        selectedSlots.includes(allSlots[index - 2])
+      );
+  
+      return (
+        <li
+          key={slot}
+          id={`slot-${index}`}
+          className={`${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`}
+          onClick={() => {
+          if (!isDisabled) {
+            handleTimeSlotSelect(slot);
+          }
+        }}
+        >
+          {slot}
+        </li>
+      );
+    });
   };
+
+  
+  
 
   const saveAvailblity = () => {
     setAvailSlots((prev) => [...prev, { user: currentUser, slots: selectedTimeSlots }]);
@@ -287,5 +367,11 @@ const Mainsection = styled.section`
   }
   .active {
     background-color: var(--accent-color);
+  }
+  .disabled{
+    color:grey;
+    &:hover{
+      background-color:inherit;
+    }
   }
 `;

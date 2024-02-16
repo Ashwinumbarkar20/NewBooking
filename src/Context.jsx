@@ -11,6 +11,7 @@ const DataProvider = ({children}) => {
     const[isloggedin,setIsloggedin]=useState(false);
     const[error,setError]=useState("");
     const[users,setUsers]=useState([]);
+    const [allBookings, setAllBookings] = useState([]);
     const[currentUser,setCurrentUser]=useState(null);
     const[availSlots,setAvailSlots]=useState([]);
 const[logindata,setLoginData]=useState({
@@ -103,7 +104,7 @@ else{
         setUsertype,handleLoginbtn,showlogin, setShowlogin,isloggedin,
         setIsloggedin,handlelogin,handleLogout,error,setError,
         logindata,currentUser,handleLoginFormdata,getNextWeekDates,
-        availSlots,setAvailSlots
+        availSlots,setAvailSlots,allBookings, setAllBookings
         }}>{children}
         
         </FixhealthContext.Provider>

@@ -3,13 +3,14 @@
     import { FixhealthContext } from '../../Context'
 
     export default function Sales() {
-      const { availSlots,setAvailSlots } = useContext(FixhealthContext);
+      const { availSlots,setAvailSlots,allBookings, setAllBookings } = useContext(FixhealthContext);
       const [selectedDate, setSelectedDate] = useState('');
       const [selectedTimeOfDay, setSelectedTimeOfDay] = useState('');
       const [uniqueDates, setUniqueDates] = useState([]);
       const [timeSlots, setTimeSlots] = useState([]);
       const [doctorOptions, setDoctorOptions] = useState([]);
       const [selectedTimeSlot, setSelectedTimeSlot] = useState(null);
+     
       const [booking, setBooking] = useState({
         date: '',
         timeSlot: null,
@@ -18,7 +19,7 @@
         remarks: '',
       });
       const [showModal, setShowModal] = useState(false);
-      
+      console.log(booking)
       useEffect(() => {
         if (selectedDate && selectedTimeOfDay) {
          
@@ -53,6 +54,7 @@ console.log(filteredSlots)
         setUniqueDates(sortedDates);
     }, [availSlots]);
   
+    
       
       const handleDateChange = (e) => {
           setSelectedDate(e.target.value);
@@ -60,16 +62,24 @@ console.log(filteredSlots)
           setTimeSlots([]);
       };
 
-   const handleTimeSlotClick = (slot) => {
-  setSelectedTimeSlot(slot.slot);
-  setBooking({
-    ...booking,
-    date: selectedDate, // Update booking state with selected date
-    timeSlot: slot.slot, // Update booking state with selected time slot
-  });
-  setShowModal(true);
-};
-
+      const handleTimeSlotClick = (slot) => {
+        setSelectedTimeSlot(slot.slot);
+        // Find the booking for the selected slot from previous bookings, if any
+        const selectedBooking = availSlots.flatMap(user => user.slots).find(b => b.date === selectedDate && b.slot === slot.slot);
+        // Update booking state with the selected booking or initialize with default values
+        setBooking(selectedBooking ? {
+          ...selectedBooking,
+          customerName: selectedBooking.customerName || '', // Ensure customerName is initialized
+          remarks: selectedBooking.remarks || '', // Ensure remarks are initialized
+        } : {
+          date: selectedDate,
+          timeSlot: slot.slot,
+          doctor: '',
+          customerName: '',
+          remarks: '',
+        });
+        setShowModal(true);
+      };
 
 
 const handleCustomerNameChange = e => {
@@ -77,19 +87,25 @@ const handleCustomerNameChange = e => {
   setBooking(prevBooking => ({ ...prevBooking, customerName }));
 };
 
-  const filterDoctors = () => {
-    if (selectedDate && selectedTimeOfDay) {
-      const filteredSlots = availSlots.filter(user =>
-        user.slots.some(slot => slot.date === selectedDate && slot.time === selectedTimeOfDay)
-      );
-      const doctors = Array.from(new Set(filteredSlots.map(user => user.name)));
-      setDoctorOptions(doctors);
-    }
-  };
+
+const filterDoctors = () => {
+  if (selectedDate && selectedTimeOfDay) {
+    // Filter availSlots to find slots for the selected date and time
+    const filteredSlots = availSlots.filter(user =>
+      user.slots.some(slot => slot.date === selectedDate && slot.time === selectedTimeOfDay)
+    );
+    // Extract unique doctor names from filteredSlots
+    const doctors = Array.from(new Set(filteredSlots.map(user => user.user)));
+    console.log("Filtered slots for doctors:", filteredSlots);
+    console.log("Doctors:", doctors);
+    // Update doctorOptions state with the unique doctor names
+    setDoctorOptions(doctors);
+  }
+};
   
   useEffect(() => {
     filterDoctors();
-  }, [selectedDate, selectedTimeOfDay,availSlots]);
+  }, [selectedDate, selectedTimeOfDay,availSlots,setSelectedTimeSlot]);
   
   // Function to handle doctor selection
   const handleDoctorChange = e => {
@@ -106,32 +122,40 @@ const handleCustomerNameChange = e => {
           setSelectedTimeOfDay(e.target.value);
       };
   
+
+      
       const handleBookingSubmit = () => {
-        // Save booking information
         const newBooking = {
           date: selectedDate,
           timeSlot: selectedTimeSlot,
           doctor: booking.doctor,
           customerName: booking.customerName,
           remarks: booking.remarks,
-          // Add any other necessary fields here
         };
-        console.log('Booking:', newBooking);
-      
-        // Remove booked slot from available slots
+    
+        setAllBookings(prevBookings => [...prevBookings, newBooking]);
+    
         const updatedAvailSlots = availSlots.map(user => ({
           ...user,
-          slots: user.slots.filter(slot => !(slot.date === selectedDate && slot.slot === selectedTimeSlot))
+          slots: user.slots.map(slot => {
+            if (slot.date === selectedDate && slot.slot === selectedTimeSlot) {
+              return newBooking;
+            } else {
+              return slot;
+            }
+          })
         }));
+    
         setAvailSlots(updatedAvailSlots);
-      
-        // Reset booking state
+    
         setBooking({
-          ...booking, // Preserve existing booking data
-          customerName: '', // Reset customer name
-          remarks: '', // Reset remarks
+          date: '',
+          timeSlot: null,
+          doctor: '',
+          customerName: '',
+          remarks: '',
         });
-        setShowModal(false); // Close the modal
+        setShowModal(false);
       };
 
       return (
